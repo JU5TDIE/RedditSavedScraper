@@ -18,6 +18,18 @@ def check_auth():
         click.pause()
         sys.exit()
 
+def get_saved_posts():
+    print('Crawling all saved posts...')
+
+    saved_posts = []
+
+    for item in reddit.user.me().saved(limit=None):
+        if isinstance(item, praw.models.Submission):
+            saved_posts.append(item)
+    print('Got all saved posts!')
+
+    return saved_posts
+
 if __name__ == '__main__':
     with open('user.json') as f:
         data = json.load(f)
