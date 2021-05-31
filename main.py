@@ -30,6 +30,16 @@ def get_saved_posts():
 
     return saved_posts
 
+def get_subreddit_list(saved_posts):
+    subreddits_list = []
+
+    for item in saved_posts:
+        name = item.subreddit
+        if not name in subreddits_list:
+            subreddits_list.append(name)
+
+    return subreddits_list
+
 if __name__ == '__main__':
     with open('user.json') as f:
         data = json.load(f)
