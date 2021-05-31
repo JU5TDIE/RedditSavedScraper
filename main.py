@@ -42,14 +42,19 @@ def get_subreddit_list(saved_posts):
 
 def download_posts(saved_posts, subreddit):
     deleted_posts = []
+    
+    f = open('%s.txt' % subreddit, 'w')
 
+    subreddit = '/r/%s/' % subreddit
     for post in saved_posts:
         if subreddit in post.permalink:
             link = "https://www.reddit.com" + post.permalink
             print(link)
+            f.write(link + '\n')
             DownloadJob(link).run()
-            # post.unsave()
+            post.unsave()
             deleted_posts.append(post)
+    f.close()
 
     for post in deleted_posts:
         saved_posts.remove(post)
