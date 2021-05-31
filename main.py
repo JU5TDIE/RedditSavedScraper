@@ -40,6 +40,20 @@ def get_subreddit_list(saved_posts):
 
     return subreddits_list
 
+def download_posts(saved_posts, subreddit):
+    deleted_posts = []
+
+    for post in saved_posts:
+        if subreddit in post.permalink:
+            link = "https://www.reddit.com" + post.permalink
+            print(link)
+            DownloadJob(link).run()
+            # post.unsave()
+            deleted_posts.append(post)
+
+    for post in deleted_posts:
+        saved_posts.remove(post)
+
 if __name__ == '__main__':
     with open('user.json') as f:
         data = json.load(f)
