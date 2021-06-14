@@ -2,7 +2,7 @@ import sys
 import praw
 import json
 import click
-from gallery_dl.job import DownloadJob
+from gallery_dl import job, config
 from prawcore.exceptions import OAuthException
 from prawcore.exceptions import ResponseException
 
@@ -41,20 +41,22 @@ def get_subreddit_list(saved_posts):
     return subreddits_list
 
 def download_posts(saved_posts, subreddit):
+    config.load()
+    config.set(("extractor",), "base-directory", "./%s/" % subreddit)
+    
     deleted_posts = []
     
-    f = open('%s.txt' % subreddit, 'w')
-
     subreddit = '/r/%s/' % subreddit
     for post in saved_posts:
         if subreddit in post.permalink:
             link = "https://www.reddit.com" + post.permalink
             print(link)
-            f.write(link + '\n')
-            DownloadJob(link).run()
-            post.unsave()
-            deleted_posts.append(post)
-    f.close()
+            if not post.is_self:
+                job.DownloadJob(link).run()
+                post.unsave()
+                deleted_posts.append(post)
+            else:
+                print('no images or videos')
 
     for post in deleted_posts:
         saved_posts.remove(post)
