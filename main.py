@@ -83,6 +83,11 @@ def main():
                 print(item.permalink)
             print('Total %s posts' % len(saved_posts))
             print('--------------------------------------------')
+        
+        elif cmd == '!all':
+            subreddit_list = get_subreddit_list(saved_posts)
+            for item in subreddit_list:
+                download_posts(saved_posts, subreddit)
 
         elif cmd == '!clear':
             click.clear()
@@ -101,6 +106,7 @@ def main():
             print('!subreddits : View the subreddits of saved posts')
             print('!posts      : View the saved posts link')
             print('!clear      : Clear the console screen')
+            print('!all        : Download all saved posts')
             print('!exit       : Exit')
             print('--------------------------------------------')
 
