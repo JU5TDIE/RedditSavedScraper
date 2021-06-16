@@ -10,13 +10,13 @@ PRAW based Reddit Media Scraper for saved posts
 - Download or Clone the repository
 - Download and Replace [ffmpeg.exe](https://www.ffmpeg.org/download.html) to the same directory of the repository
 - Install the requirements `pip install -r requirements.txt`
-- Fill out the [informations](https://github.com/JU5TDIE/RedditSavedScraper#how-to-use-praw) in `user.json`
+- Fill out the [informations(How to use PRAW)](https://github.com/JU5TDIE/RedditSavedScraper#how-to-use-praw) in `user.json`
 - Run `python main.py`
 
 # How to use PRAW
 - Visit this url: https://www.reddit.com/prefs/apps/
 - Create a new app, name it, select `script`
-- Can use `http://localhost:8080` as redirect url
+- Can use `http://localhost:8080` as `redirect url`
 - Create the app, copy the client key, which is under the app name and the secret key, which is right next to secret
 - User-agent can be like `app name`
 
