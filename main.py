@@ -19,7 +19,7 @@ def check_auth():
         sys.exit()
 
 def get_saved_posts():
-    print('Crawling all saved posts...')
+    print('Scraping all saved posts...')
 
     saved_posts = []
 
@@ -51,12 +51,12 @@ def download_posts(saved_posts, subreddit):
         if subreddit in post.permalink:
             link = "https://www.reddit.com" + post.permalink
             print(link)
-            if not post.is_self:
+            if post.is_self is False:
                 job.DownloadJob(link).run()
                 post.unsave()
                 deleted_posts.append(post)
             else:
-                print('no images or videos')
+                print('- no images or videos')
 
     for post in deleted_posts:
         saved_posts.remove(post)
@@ -86,7 +86,10 @@ def main():
         
         elif cmd == '!all':
             subreddit_list = get_subreddit_list(saved_posts)
-            for item in subreddit_list:
+            for subreddit in subreddit_list:
+                print('--------------------------------------------')
+                print(subreddit)
+                print('--------------------------------------------')
                 download_posts(saved_posts, subreddit)
 
         elif cmd == '!clear':
