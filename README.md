@@ -26,8 +26,8 @@ PRAW based Reddit Media Scraper for saved posts
 - `click`
 - `sys`
 - `json`
+- `os`
 
 # Warning
-- `Python 3.8` is recommended version for this repository
+- `Python 3.8` and `ffmpeg` are recommended for this repository
 - If there are some issues or suggestions, write them on `Issues`
-- If the post is `crossposted` or `shared`, it can't be donwloaded.
