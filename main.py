@@ -9,7 +9,12 @@ from prawcore.exceptions import ResponseException
 
 def check_auth():
     try:
-        print('Logined as %s' % reddit.user.me())
+        if reddit.user.me() is None:
+            print('Empty user.json')
+            click.pause()
+            sys.exit()
+        else:
+            print('Logined as %s' % reddit.user.me())
     except OAuthException:
         print('Wrong Username and Password.')
         click.pause()
