@@ -143,15 +143,20 @@ def main():
                     print('--------------------------------------------')
 
 if __name__ == '__main__':
-    with open('user.json') as f:
-        data = json.load(f)
+    try:
+        with open('user.json') as f:
+            data = json.load(f)
 
-    reddit = praw.Reddit(
-        client_id=data['client_id'],
-        client_secret=data['client_secret'],
-        user_agent=data['user_agent'],
-        username=data['username'],
-        password=data['password']
-    )
+        reddit = praw.Reddit(
+            client_id=data['client_id'],
+            client_secret=data['client_secret'],
+            user_agent=data['user_agent'],
+            username=data['username'],
+            password=data['password']
+        )
 
-    main()
+        main()
+        
+    except FileNotFoundError:
+        print("No such file or directory: 'user.json'")
+        click.pause()
