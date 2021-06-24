@@ -60,20 +60,33 @@ def check_file(path, target):
 def download_posts(saved_posts, subreddit):
     config.load()
     config.set(("extractor",), "base-directory", "./%s/" % subreddit)
-    
     deleted_posts = []
-    
-    subreddit = '/r/%s/' % subreddit
+    subredditlink = '/r/%s/' % subreddit
+
     for post in saved_posts:
-        if subreddit in post.permalink:
+        if subredditlink in post.permalink:
             link = "https://www.reddit.com" + post.permalink
-            print(link)
+            print('- ' + link)
+
             if post.is_self is False:
+                postid = post.id
+                if hasattr(post, 'crosspost_parent'):
+                    postid = post.crosspost_parent.split("_")[1]
+                    r = reddit.submission(id=postid)
+                    link = "https://www.reddit.com" + r.permalink
+                    print('[*] Crossposted! (%s)' % link)
+                print('[*] Downloading ' + link)
                 job.DownloadJob(link).run()
-                post.unsave()
-                deleted_posts.append(post)
-            else:
-                print('- no images or videos')
+                if check_file(subreddit, postid):
+                    post.unsave()
+                    deleted_posts.append(post)
+                    print('[*] Successfully Downloaded!')
+                else:
+                    print("[*] ERROR! This post can't be downloaded.")
+                    
+            elif post.is_self is True:
+                print('[*] No images or videos in the post')
+            print('')
 
     for post in deleted_posts:
         saved_posts.remove(post)
