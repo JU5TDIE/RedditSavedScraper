@@ -10,29 +10,29 @@ from prawcore.exceptions import ResponseException
 def check_auth():
     try:
         if reddit.user.me() is None:
-            print('Empty user.json')
+            print('[*] Empty user.json')
             click.pause()
             sys.exit()
         else:
-            print('Logined as %s' % reddit.user.me())
+            print('[*] Logined as %s' % reddit.user.me())
     except OAuthException:
-        print('Wrong Username and Password.')
+        print('[*] Wrong Username and Password.')
         click.pause()
         sys.exit()
     except ResponseException:
-        print('Wrong Client ID and Secret')
+        print('[*] Wrong Client ID and Secret')
         click.pause()
         sys.exit()
 
 def get_saved_posts():
-    print('Scraping all saved posts...')
+    print('[*] Scraping all saved posts...')
 
     saved_posts = []
 
     for item in reddit.user.me().saved(limit=None):
         if isinstance(item, praw.models.Submission):
             saved_posts.append(item)
-    print('Got all saved posts!')
+    print('[*] Got all saved posts!')
 
     return saved_posts
 
