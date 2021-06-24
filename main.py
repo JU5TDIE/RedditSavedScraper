@@ -102,7 +102,7 @@ def main():
                 print('--------------------------------------------')
                 print(subreddit)
                 print('--------------------------------------------')
-                download_posts(saved_posts, subreddit)
+                download_posts(saved_posts, str(subreddit))
 
         elif cmd == '!clear':
             click.clear()
