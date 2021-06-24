@@ -1,3 +1,4 @@
+import os
 import sys
 import praw
 import json
@@ -39,6 +40,17 @@ def get_subreddit_list(saved_posts):
             subreddits_list.append(name)
 
     return subreddits_list
+
+def check_file(path, target):
+    filelist = []
+
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            filelist.append(os.path.join(root,file))
+
+    for name in filelist:
+        if target in name:
+            return True
 
 def download_posts(saved_posts, subreddit):
     config.load()
