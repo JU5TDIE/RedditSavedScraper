@@ -1,4 +1,3 @@
-import os
 import sys
 import praw
 import json
@@ -13,8 +12,7 @@ def check_auth():
             print('[*] Empty user.json')
             click.pause()
             sys.exit()
-        else:
-            print('[*] Logined as %s' % reddit.user.me())
+        print(f'[*] Logged as {reddit.user.me()}')
     except OAuthException:
         print('[*] Wrong Username and Password.')
         click.pause()
@@ -26,17 +24,13 @@ def check_auth():
 
 def get_saved_posts():
     print('[*] Scraping all saved posts...')
-
-    saved_posts = []
-
-    for item in reddit.user.me().saved(limit=None):
-        if isinstance(item, praw.models.Submission):
-            saved_posts.append(item)
+    saved_posts = [item for item in reddit.user.me().saved(limit=None) if isinstance(item, praw.models.Submission)]
     print('[*] Got all saved posts!')
 
     return saved_posts
 
 def get_subreddit_list(saved_posts):
+    print('[*] Scraping all subreddits from saved posts...')
     subreddits_list = []
 
     for item in saved_posts:
@@ -44,24 +38,13 @@ def get_subreddit_list(saved_posts):
         if not name in subreddits_list:
             subreddits_list.append(name)
 
+    print('[*] Got all subreddits!')
     return subreddits_list
-
-def check_file(path, target):
-    filelist = []
-
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            filelist.append(os.path.join(root,file))
-
-    for name in filelist:
-        if target in name:
-            return True
 
 def download_posts(saved_posts, subreddit):
     config.load()
-    config.set(("extractor",), "base-directory", "./%s/" % subreddit)
-    deleted_posts = []
-    subredditlink = '/r/%s/' % subreddit
+    config.set(("extractor",), "base-directory", f"./{subreddit}/")
+    subredditlink = f'/r/{subreddit}/'
 
     for post in saved_posts:
         if subredditlink in post.permalink:
@@ -74,22 +57,16 @@ def download_posts(saved_posts, subreddit):
                     postid = post.crosspost_parent.split("_")[1]
                     r = reddit.submission(id=postid)
                     link = "https://www.reddit.com" + r.permalink
-                    print('[*] Crossposted! (%s)' % link)
+                    print(f'[*] Crossposted! ({link})')
                 print('[*] Downloading ' + link)
                 job.DownloadJob(link).run()
-                if check_file(subreddit, postid):
-                    post.unsave()
-                    deleted_posts.append(post)
-                    print('[*] Successfully Downloaded!')
-                else:
-                    print("[*] ERROR! This post can't be downloaded.")
+                post.unsave()
+                saved_posts.remove(post)
                     
             elif post.is_self is True:
                 print('[*] No images or videos in the post')
-            print('')
 
-    for post in deleted_posts:
-        saved_posts.remove(post)
+            print('\n')
 
 def main():
     check_auth()
@@ -101,25 +78,25 @@ def main():
         if cmd == '!subreddits':
             subreddit_list = get_subreddit_list(saved_posts)
 
-            print('--------------------------------------------')
+            print('────────────────────────────────────────────')
             for item in subreddit_list:
                 print(item)
-            print('Total %s subreddits' % len(subreddit_list))
-            print('--------------------------------------------')
+            print(f'Total {len(subreddit_list)} subreddits')
+            print('────────────────────────────────────────────')
 
         elif cmd == '!posts':
-            print('--------------------------------------------')
+            print('────────────────────────────────────────────')
             for item in saved_posts:
                 print(item.permalink)
-            print('Total %s posts' % len(saved_posts))
-            print('--------------------------------------------')
+            print(f'Total {len(saved_posts)} posts')
+            print('────────────────────────────────────────────')
         
         elif cmd == '!all':
             subreddit_list = get_subreddit_list(saved_posts)
             for subreddit in subreddit_list:
-                print('--------------------------------------------')
+                print('────────────────────────────────────────────')
                 print(subreddit)
-                print('--------------------------------------------')
+                print('────────────────────────────────────────────')
                 download_posts(saved_posts, str(subreddit))
 
         elif cmd == '!clear':
@@ -130,18 +107,19 @@ def main():
             sys.exit()
 
         elif cmd == '!help':
-            print('--------------------------------------------')
-            print('You can download the contents by selecting subreddit')
-            print('If you wanna download more than two subreddits in same time,')
-            print('put "+" between subreddits. (Python+learnpython+learnprogramming)')
-            print('')
-            print('Commands :')
-            print('!subreddits : View the subreddits of saved posts')
-            print('!posts      : View the saved posts link')
-            print('!clear      : Clear the console screen')
-            print('!all        : Download all saved posts')
-            print('!exit       : Exit')
-            print('--------------------------------------------')
+            print('''
+────────────────────────────────────────────
+You can download the contents by subreddit
+If you want to download more than two subreddits in the same time,
+put "+" between subreddits. (Python+learnpython+learnprogramming)
+
+Commands :')
+!subreddits : View the subreddits of saved posts
+!posts      : View the saved posts link
+!clear      : Clear the console screen
+!all        : Download all saved posts
+!exit       : Exit
+────────────────────────────────────────────''')
 
         else: 
             s = cmd.split('+')
@@ -150,15 +128,15 @@ def main():
                 subreddit_list = get_subreddit_list(saved_posts)
 
                 if subreddit in subreddit_list:
-                    print('--------------------------------------------')
+                    print('────────────────────────────────────────────')
                     print(subreddit)
-                    print('--------------------------------------------')
+                    print('────────────────────────────────────────────')
                     download_posts(saved_posts, subreddit)
                 else:
-                    print('--------------------------------------------')
+                    print('────────────────────────────────────────────')
                     print(subreddit, 'is not in the list. Choose again. ')
                     print('!help to view the commands')
-                    print('--------------------------------------------')
+                    print('────────────────────────────────────────────')
 
 if __name__ == '__main__':
     try:
@@ -175,6 +153,6 @@ if __name__ == '__main__':
 
         main()
         
-    except FileNotFoundError:
-        print("No such file or directory: 'user.json'")
+    except FileNotFoundError as e:
+        print(e)
         click.pause()
