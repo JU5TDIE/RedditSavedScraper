@@ -2,7 +2,7 @@
 PRAW based Reddit Media Scraper for saved posts
 
 # Features
-- PRAW Based
+- PRAW
 - CLI
 - Unsaves the posts which you downloaded
 
@@ -16,18 +16,9 @@ PRAW based Reddit Media Scraper for saved posts
 # How to use PRAW
 - Visit this url: https://www.reddit.com/prefs/apps/
 - Create a new app, name it, select `script`
-- Can use `http://localhost:8080` as `redirect url`
-- Create the app, copy the client key, which is under the app name and the secret key, which is right next to secret
-- User-agent can be like `app name`
-
-# Used Modules
-- `gallery-dl`
-- `PRAW`
-- `click`
-- `sys`
-- `json`
-- `os`
+- `http://localhost:8080` as `redirect url`
+- User-agent as `app name`
+- Create the app, copy the client key, which is under the app name and the secret key
 
 # Warning
-- `Python 3.8` and `ffmpeg` are recommended for this repository
-- If there are some issues or suggestions, write them on `Issues`
+- `Python 3.8` and `ffmpeg` are required for this repository
