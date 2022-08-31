@@ -1,5 +1,2 @@
-- check if the post is crossposted or shared
-- check if images or videos are successfully downloaded in storage
- (DONE - June 23, 2021 EST)
-
- - better CLI (simplified)
+- better CLI (simplified + banner + logging)
+- check if content is downloaded successfully with gallery-dl
